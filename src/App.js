@@ -1,25 +1,17 @@
-import logo from './logo.svg';
-import './App.css';
-
-function App() {
+import React, { createContext, useEffect, useState } from "react";
+import axios from "axios";
+import Navbar from './component/Navbar'
+import News from './component/News'
+import { NewsContextProvider } from "./emitter/NewsContext";
+import NavigationLink from "./router/NavigationLink";
+import LoadingBar from 'react-top-loading-bar'
+const App =() => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <div>
+     <NewsContextProvider>
+       <NavigationLink/>
+        </NewsContextProvider>
+      </div>
+  )
 }
-
-export default App;
+export default App
