@@ -18,7 +18,7 @@ function Navbar(props) {
     <nav className="navbar fixed-top navbar-expand-lg navbar-bg">
       <div className="container mx-5 news-header">
         <a className="navbar-brand" href="/">
-          Navbar
+		Global News 
         </a>
         <button
           className="navbar-toggler"

@@ -5,6 +5,7 @@ import axios from "axios";
 import PropTypes from "prop-types";
 import InfiniteScroll from "react-infinite-scroll-component";
 import ReactFlagsSelect from "react-flags-select";
+import Carousel from "./Carousel";
 // import Carousel from "./Carousel";
 
 import moment from "moment";
@@ -56,18 +57,18 @@ const News = (props) => {
     console.log(articles);
   };
 
-  const slectedCountry = async () => {
-    //let setC = ((code) => setCountry(code))
-      const url = `https://newsapi.org/v2/top-headlines?country=${country}&category=${
-        props.category
-      }&apiKey=${apiKey}&page=1&pageSize=${props.pageSize}`;
-      let data = await fetch(url);
-      let parsedData = await data.json();
-      setArticles(articles.concat(parsedData.articles));
-      setTotalResults(parsedData.totalResults);
-      props.setProgress(100);
-      alert("page 1")
-  };
+  // const slectedCountry = async () => {
+  //   //let setC = ((code) => setCountry(code))
+  //     const url = `https://newsapi.org/v2/top-headlines?country=${country}&category=${
+  //       props.category
+  //     }&apiKey=${apiKey}&page=1&pageSize=${props.pageSize}`;
+  //     let data = await fetch(url);
+  //     let parsedData = await data.json();
+  //     setArticles(articles.concat(parsedData.articles));
+  //     setTotalResults(parsedData.totalResults);
+  //     props.setProgress(100);
+  //     alert("page 1")
+  // };
   const fetchMoreData = async () => {
     const url = `https://newsapi.org/v2/top-headlines?country=${country}&category=${
       props.category
@@ -92,28 +93,18 @@ const News = (props) => {
 //props.category
   return (
     <div className="container my-3 pt-5">
-      <div className="row justify-content-between">
-        <div className="col-sm-6 text-start">
-          <h3 className="my-4 news-headline">
-            NewsMonkey - Top {capitalizeFirstLetter(props.category)} HeadLines
+      <div className="row justify-content-between mt-4">
+        <div className="col-sm-10 text-start align-self-center">
+          <h3 className="my-2 news-headline">
+            Top <strong>{capitalizeFirstLetter(props.category)}</strong> HeadLines of {country}
           </h3>
         </div>
-        <div className="col-sm-6 text-start">
+        <div className="col-sm-2 text-start align-self-center">
           <ReactFlagsSelect
-            className="select-btn my-4 "
+            className="select-btn my-2 "
             selected={country}
-            onSelect={((code) => setCountry(code, setPage(1)))}
+            onSelect={((code) => setCountry(code, setPage(1),props.category))}
             countries={["IN", "US", "AU", "IT", "RS", "JP"]}
-            /*showSelectedLabel={showSelectedLabel}
-        selectedSize={selectedSize}
-        showOptionLabel={showOptionLabel}
-        optionsSize={optionsSize}
-        placeholder={placeholder}
-        searchable={searchable}
-        searchPlaceholder={searchPlaceholder}
-        alignOptionsToRight={alignOptionsToRight}
-        fullWidth={fullWidth}
-        disabled={disabled} */
           />
         </div>
       </div>
@@ -128,9 +119,10 @@ const News = (props) => {
 				> 
         {/* {/* <Carousel apiKey={props.apikey} category={props.category?props.category:"sports"}/> */}
         {/* <div className="row justify-content-start mt-4"> */}
+        <Carousel category={props.category}/>
           {articles.map((element, i) => {
             return (
-              <div className="col-sm-3 py-3" key={i}>
+              <div className="col-sm-4 py-3" key={i}>
                 <NewsCard
                   sorcename={element.source.name}
                   author={element.author ? element.author : "Unknown"}
@@ -139,14 +131,13 @@ const News = (props) => {
                   imgUrl={
                     element.urlToImage
                       ? element.urlToImage
-                      : "https://i.picsum.photos/id/866/536/354.jpg?hmac=tGofDTV7tl2rprappPzKFiZ9vDh5MKj39oa2D--gqhA"
+                      : "https://fakeimg.pl/1900x1000/"
+                  }
+                  newsDescription={
+                    element.description ? element.description : element.title
                   }
                   readMore={element.url}
                 />
-
-                {/* newsDescription={
-                    element.description ? element.description : element.title
-                  } */}
               </div>
             );
           })}
