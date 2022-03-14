@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { NewsContext } from "../emitter/NewsContext";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import ReactFlagsSelect from "react-flags-select";
 function Navbar(props) {
   const { country, setCountry,apiKey} = useContext(NewsContext);
 
@@ -11,7 +12,7 @@ function Navbar(props) {
   const [totalResults, setTotalResults] = useState(0);
   //const onSelect = (code) => setCountry(code.target.value);
   const onSelect = (code) => setCountry(code);
- 
+  
   //console.log("SELECT", onSelect);
   return (
     <nav className="navbar fixed-top navbar-expand-lg navbar-bg">

@@ -2,16 +2,15 @@ import React, { useContext, useEffect, useState } from "react";
 import { NewsContext } from "../emitter/NewsContext";
 import Spinner from "./Spinner";
 import axios from "axios";
-
-import ReactFlagsSelect from "react-flags-select";
 import PropTypes from "prop-types";
 import InfiniteScroll from "react-infinite-scroll-component";
+import ReactFlagsSelect from "react-flags-select";
 // import Carousel from "./Carousel";
 
 import moment from "moment";
 import NewsCard from "./NewsCard";
 const News = (props) => {
-  const { country, setCountry, apiKey } = useContext(NewsContext);
+  const { apiKey, setCountry, country } = useContext(NewsContext);
 
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -37,29 +36,15 @@ const News = (props) => {
 
   const updateNews = async () => {
     props.setProgress(30);
-    const url = `https://newsapi.org/v2/top-headlines?country=${country}&category=${
-      props.category
-    }&apiKey=${apiKey}&page=${page + 1}&pageSize=${props.pageSize}`;
-    setLoading(true);
+    const url = `https://newsapi.org/v2/top-headlines?country=${country}&category=${props.category}&apiKey=${apiKey}&page=${page}&pageSize=${props.pageSize}`;
     let data = await fetch(url);
-    props.setProgress(40);
     let parsedData = await data.json();
-    props.setProgress(70);
-    console.log(parsedData);
     setArticles(articles.concat(parsedData.articles));
     setTotalResults(parsedData.totalResults);
-    setLoading(false);
-    props.setProgress(100);
   };
 
-  useEffect(async () => {
-    updateNews();
-  }, [country, props.category, page]);
-
   const countryNews = async () => {
-    const url = `https://newsapi.org/v2/top-headlines?country=${country}&category=${
-      props.category
-    }&apiKey=${apiKey}&page=${page + 1}&pageSize=${props.pageSize}`;
+    const url = `https://newsapi.org/v2/top-headlines?country=${country}&category=business&apiKey=${apiKey}&page=${page}&pageSize=${props.pageSize}`;
     setLoading(true);
     await axios
       .get(url)
@@ -71,10 +56,6 @@ const News = (props) => {
     console.log(articles);
   };
 
-  useEffect(async () => {
-    countryNews();
-    console.log("work navbar");
-  }, [country, props.category, page]);
   const fetchMoreData = async () => {
     const url = `https://newsapi.org/v2/top-headlines?country=${country}&category=${
       props.category
@@ -87,18 +68,43 @@ const News = (props) => {
 
     props.setProgress(100);
   };
+  useEffect(async () => {
+    countryNews();
+    console.log("work navbar");
+  }, [country]);
+
+  // useEffect(async () => {
+  //   updateNews();
+  // }, [country, props.category, page]);
 
   return (
     <div className="container my-3 pt-5">
-      <h3 className="my-4 news-headline">
-        NewsMonkey - Top {capitalizeFirstLetter(props.category)} HeadLines
-      </h3>
-      <ReactFlagsSelect
-        className="select-btn"
-        selected={country}
-        onSelect={(code) => setCountry(code)}
-        countries={["IN", "US", "AU", "IT", "RS", "JP"]}
-      />
+      <div className="row justify-content-between">
+        <div className="col-sm-6 text-start">
+          <h3 className="my-4 news-headline">
+            NewsMonkey - Top {capitalizeFirstLetter(props.category)} HeadLines
+          </h3>
+        </div>
+        <div className="col-sm-6 text-start">
+          <ReactFlagsSelect
+            className="select-btn"
+            selected={country}
+            onSelect={((code) => setCountry(code))}
+            countries={["IN", "US", "AU", "IT", "RS", "JP"]}
+            /*showSelectedLabel={showSelectedLabel}
+        selectedSize={selectedSize}
+        showOptionLabel={showOptionLabel}
+        optionsSize={optionsSize}
+        placeholder={placeholder}
+        searchable={searchable}
+        searchPlaceholder={searchPlaceholder}
+        alignOptionsToRight={alignOptionsToRight}
+        fullWidth={fullWidth}
+        disabled={disabled} */
+          />
+        </div>
+      </div>
+
       <div>
         <InfiniteScroll
           className="row justify-content-start mt-4"
