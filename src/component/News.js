@@ -22,29 +22,29 @@ const News = (props) => {
   const capitalizeFirstLetter = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
   };
-
-  // constructor(props) {
-  //     super(props);
-  //     this.state = {
-  //       articles: [],
-  //       loading: false,
-  //       page: 1,
-  //     };
-  //     document.title=`${this.capitalizeFirstLetter(props.category)} - NewsMonkey`
-
-  //   }
-
   const updateNews = async () => {
     props.setProgress(30);
     const url = `https://newsapi.org/v2/top-headlines?country=${country}&category=${props.category}&apiKey=${apiKey}&page=${page}&pageSize=${props.pageSize}`;
-    let data = await fetch(url);
-    let parsedData = await data.json();
-    setArticles(articles.concat(parsedData.articles));
-    setTotalResults(parsedData.totalResults);
-  };
+    setLoading(true);
+    await axios
+      .get(url)
+      .then(response => {
+        props.setProgress(40);
+        setArticles(response.data.articles);
+        setTotalResults(response.data.totalResults);
+        setLoading(true);
+        props.setProgress(100);
+        console.log(response.data)
 
+       })
+      .catch((error) => console.log(error));
+     
+  };
   const countryNews = async () => {
-    const url = `https://newsapi.org/v2/top-headlines?country=${country}&category=business&apiKey=${apiKey}&page=${page}&pageSize=${props.pageSize}`;
+    const url = `https://newsapi.org/v2/top-headlines?country=${country}&category=${
+      props.category
+    }&apiKey=${apiKey}&page=${page}&pageSize=${props.pageSize}`;
+
     setLoading(true);
     await axios
       .get(url)
@@ -56,6 +56,18 @@ const News = (props) => {
     console.log(articles);
   };
 
+  const slectedCountry = async () => {
+    //let setC = ((code) => setCountry(code))
+      const url = `https://newsapi.org/v2/top-headlines?country=${country}&category=${
+        props.category
+      }&apiKey=${apiKey}&page=1&pageSize=${props.pageSize}`;
+      let data = await fetch(url);
+      let parsedData = await data.json();
+      setArticles(articles.concat(parsedData.articles));
+      setTotalResults(parsedData.totalResults);
+      props.setProgress(100);
+      alert("page 1")
+  };
   const fetchMoreData = async () => {
     const url = `https://newsapi.org/v2/top-headlines?country=${country}&category=${
       props.category
@@ -67,16 +79,17 @@ const News = (props) => {
     setTotalResults(parsedData.totalResults);
 
     props.setProgress(100);
+    //alert("page last")
+    //alert(((code) => setCountry(code)))
+    
   };
   useEffect(async () => {
     countryNews();
+
     console.log("work navbar");
   }, [country]);
-
-  // useEffect(async () => {
-  //   updateNews();
-  // }, [country, props.category, page]);
-
+ 
+//props.category
   return (
     <div className="container my-3 pt-5">
       <div className="row justify-content-between">
@@ -87,9 +100,9 @@ const News = (props) => {
         </div>
         <div className="col-sm-6 text-start">
           <ReactFlagsSelect
-            className="select-btn"
+            className="select-btn my-4 "
             selected={country}
-            onSelect={((code) => setCountry(code))}
+            onSelect={((code) => setCountry(code, setPage(1)))}
             countries={["IN", "US", "AU", "IT", "RS", "JP"]}
             /*showSelectedLabel={showSelectedLabel}
         selectedSize={selectedSize}
@@ -104,17 +117,17 @@ const News = (props) => {
           />
         </div>
       </div>
-
       <div>
+       
         <InfiniteScroll
-          className="row justify-content-start mt-4"
-          dataLength={articles.length}
-          next={fetchMoreData}
-          hasMore={articles.length !== totalResults}
-          loader={<Spinner />}
-        >
-          {/* {/* <Carousel apiKey={props.apikey} category={props.category?props.category:"sports"}/> */}
-          {/* <div className="row justify-content-start mt-4"> */}
+					className="row justify-content-start mt-4"
+					dataLength={articles.length}
+					next={fetchMoreData}
+					hasMore={articles.length !== totalResults}
+					loader={<Spinner />}
+				> 
+        {/* {/* <Carousel apiKey={props.apikey} category={props.category?props.category:"sports"}/> */}
+        {/* <div className="row justify-content-start mt-4"> */}
           {articles.map((element, i) => {
             return (
               <div className="col-sm-3 py-3" key={i}>
@@ -137,7 +150,7 @@ const News = (props) => {
               </div>
             );
           })}
-          {/* </div> */}
+        {/* </div> */}
         </InfiniteScroll>
       </div>
     </div>
