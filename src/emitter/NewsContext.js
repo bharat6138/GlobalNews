@@ -9,7 +9,7 @@ export const NewsContextProvider = (props) => {
   const [country, setCountry] = useState("IN");
   const [progress, setProgress] = useState(10);
   const [page, setPage] = useState(1);
-  const apiKey = "68a05bbf147e4e6a9a76779b5e9b1581";
+  const apiKey = "a655859c971a49b7bd388efd42fb84cb";
   // 8db59a7b9e90473aba85e22410ace8fb
   // fba72aee925d4e64b93080ffa0f04836
   // d0e8faa60aaf4a228f8e26a50b5164e1
